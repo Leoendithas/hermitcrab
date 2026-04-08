@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animal Explorer – Singapore Shores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ocean: #1A4A6B;
+    --coral: #E8633A;
+    --seafoam: #5BAF94;
+    --shell: #D4A96A;
+    --dark: #1C1C1C;
+    --light-bg: #FBF6EC;
+    --muted: #7A6E5F;
+    --white: #ffffff;
+    --tab-active: #E8633A;
+    --card-bg: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--light-bg);
+    color: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── ANIMAL SELECTOR ── */
+  .selector-bar {
+    background: var(--ocean);
+    padding: 20px 16px 0;
+    text-align: center;
+  }
+
+  .selector-label {
+    color: rgba(255,255,255,0.65);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .animal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-bottom: 0;
+  }
+
+  .animal-btn {
+    background: rgba(255,255,255,0.12);
+    border: 2px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.8);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .animal-btn:hover {
+    background: rgba(255,255,255,0.22);
+    color: white;
+  }
+
+  .animal-btn.active {
+    background: white;
+    border-color: white;
+    color: var(--ocean);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 40px 24px 60px;
+    text-align: center;
+    transition: background 0.4s;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 80%, rgba(91,175,148,0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 20%, rgba(212,169,106,0.2) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-wave {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(48px, 10vw, 96px);
+    font-weight: 700;
+    color: white;
+    line-height: 1.05;
+    position: relative;
+    text-shadow: 0 4px 32px rgba(0,0,0,0.2);
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--shell);
+  }
+
+  .hero-subtitle {
+    color: rgba(255,255,255,0.72);
+    font-size: 15px;
+    margin-top: 10px;
+    position: relative;
+  }
+
+  .hero-image-wrap {
+    margin-top: 28px;
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero-img-box {
+    width: min(460px, 90vw);
+    height: 260px;
+    border-radius: 20px;
+    border: 3px solid rgba(255,255,255,0.2);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+    position: relative;
+    overflow: hidden;
+    background: rgba(0,0,0,0.15);
+  }
+
+  .hero-img-box img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+
+  .hero-img-box img.loaded { display: block; }
+  .hero-img-box .emoji { position: relative; z-index: 1; }
+
+  /* ── TABS ── */
+  .tabs-container {
+    background: white;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 17px 20px 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .tab-btn:hover { color: var(--ocean); }
+
+  .tab-btn.active {
+    color: var(--tab-active);
+    border-bottom-color: var(--tab-active);
+    font-weight: 600;
+  }
+
+  /* ── CONTENT ── */
+  .content-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 36px 20px 80px;
+  }
+
+  .section-panel { display: none; animation: fadeUp 0.3s ease; }
+  .section-panel.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--ocean);
+    margin-bottom: 6px;
+  }
+
+  .section-divider {
+    width: 44px;
+    height: 4px;
+    background: var(--coral);
+    border-radius: 2px;
+    margin-bottom: 26px;
+  }
+
+  /* ── TEXT ── */
+  .text-block { font-size: 17px; line-height: 1.82; color: #333; }
+  #panel-conservation .text-block { color: #222; }
+  .text-block p { margin-bottom: 14px; }
+
+  /* ── TOOLTIP ── */
+  .tooltip-word {
+    color: var(--ocean);
+    font-weight: 600;
+    border-bottom: 2px dotted var(--seafoam);
+    cursor: pointer;
+  }
+
+  .tooltip-popup {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    background: white;
+    border: 2px solid var(--ocean);
+    border-radius: 16px;
+    padding: 14px 18px;
+    max-width: 270px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+    pointer-events: none;
+  }
+
+  .tooltip-popup.show { display: block; }
+  .tip-word { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 700; color: var(--ocean); margin-bottom: 5px; }
+  .tip-def  { font-size: 17px; line-height: 1.6; color: #444; }
+
+  /* ── INFO CARDS (Meet tab) ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .info-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 22px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+    border-top: 4px solid var(--coral);
+  }
+
+  .info-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    color: var(--ocean);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .info-card p { font-size: 17px; line-height: 1.75; color: #444; }
+
+  /* ── IMAGE GRID ── */
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 14px;
+    margin: 24px 0;
+  }
+
+  .img-card { border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,0.09); background: white; }
+  .img-card img { width: 100%; height: 175px; object-fit: cover; display: block; }
+  .img-card-cap { padding: 9px 13px; font-size: 13px; color: var(--muted); font-style: italic; }
+
+  /* ── FULL WIDTH IMAGE (for More Facts tab) ── */
+  .fullwidth-img-wrap {
+    margin: 24px 0;
+    text-align: center;
+  }
+  .fullwidth-img-wrap img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+    display: block;
+  }
+  .fullwidth-img-cap {
+    padding: 9px 13px;
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    text-align: center;
+  }
+
+  /* ── VIDEO ── */
+  .video-wrap {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 24px 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+  }
+
+  .video-wrap iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: none;
+  }
+
+  /* ── DID YOU KNOW cards ── */
+  .fact-card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-bottom: 13px;
+    border-left: 5px solid var(--coral);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .fact-num {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--shell);
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 32px;
+  }
+
+  .fact-text { font-size: 17px; line-height: 1.75; color: #333; padding-top: 3px; }
+
+  /* ── CONSERVATION ── */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 22px;
+  }
+
+  .status-danger { background: #FFEBEE; color: #C62828; }
+  .status-warn   { background: #FFF3E0; color: #E65100; }
+  .status-ok     { background: #E8F5E9; color: #2E7D32; }
+
+  .action-box {
+    background: linear-gradient(135deg, var(--seafoam), #3D9E7E);
+    border-radius: 16px;
+    padding: 22px 26px;
+    color: white;
+    margin-top: 22px;
+  }
+
+  .action-box h3 { font-family: 'Fraunces', serif; font-size: 22px; margin-bottom: 14px; }
+  .action-box ul { list-style: none; }
+  .action-box li { padding: 5px 0; display: flex; gap: 10px; font-size: 17px; line-height: 1.6; }
+
+  .learn-more {
+    background: #E8F4F8;
+    border: 1px solid #B0D4E8;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 18px;
+    font-size: 17px;
+    color: #1A4A6B;
+  }
+
+  .learn-more a { color: #1A4A6B; font-weight: 600; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 580px) {
+    .hero { padding: 28px 16px 48px; }
+    .section-title { font-size: 26px; }
+    .tab-btn { padding: 15px 13px 13px; font-size: 13px; }
+    .fact-num { font-size: 22px; min-width: 26px; }
+    .animal-btn { font-size: 13px; padding: 9px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ANIMAL SELECTOR -->
+<div class="selector-bar" id="selectorBar">
+  <span class="selector-label">Choose an Animal</span>
+  <div class="animal-buttons">
+    <button class="animal-btn active" onclick="switchAnimal('hermit')">🦀 Orange-Striped Hermit Crab</button>
+    <button class="animal-btn" onclick="switchAnimal('flower')">🦀 Flower Crab</button>
+    <button class="animal-btn" onclick="switchAnimal('clam')">🐚 Fluted Giant Clam</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero" id="hero" style="background: var(--ocean);">
+  <h1 id="heroTitle">Orange-Striped <em>Hermit Crab</em></h1>
+  <p class="hero-subtitle" id="heroSubtitle">The shell-borrowing shore wanderer</p>
+  <div class="hero-image-wrap">
+    <div class="hero-img-box" id="heroImgBox">
+      <img id="heroImg" src="" alt="" onload="this.classList.add('loaded')" onerror="this.style.display='none'">
+      <span class="emoji" id="heroEmoji">🦀</span>
+    </div>
+  </div>
+  <svg class="hero-wave" viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#FBF6EC"/>
+  </svg>
+</div>
+
+<!-- TABS -->
+<div class="tabs-container">
+  <div class="tabs" id="tabsBar">
+    <button class="tab-btn active" onclick="switchTab('meet')">👀 Meet the Animal</button>
+    <button class="tab-btn" onclick="switchTab('didyouknow')">💡 Did You Know?</button>
+    <button class="tab-btn" onclick="switchTab('funfacts')">🌟 More Facts</button>
+    <button class="tab-btn" onclick="switchTab('conservation')">🌍 Conservation</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrapper">
+  <div id="panel-meet" class="section-panel active"></div>
+  <div id="panel-didyouknow" class="section-panel"></div>
+  <div id="panel-funfacts" class="section-panel"></div>
+  <div id="panel-conservation" class="section-panel"></div>
+</div>
+
+<!-- TOOLTIP -->
+<div class="tooltip-popup" id="tooltipPopup">
+  <div class="tip-word" id="tipWord"></div>
+  <div class="tip-def"  id="tipDef"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// TOOLTIP DICTIONARY
+// ─────────────────────────────────────────────
+const TOOLTIPS = {
+  'mangroves':     'Coastal forests with tangled roots that grow in shallow, salty water. Many animals live in them.',
+  'seagrasses':    'Underwater plants that grow in shallow coastal waters. They provide food and shelter for sea animals.',
+  'algae':         'Simple plant-like living things that grow in water, often green or brown. Many sea animals eat them.',
+  'exoskeleton':   'A hard outer shell that protects an animal\'s body — like armour on the outside instead of a skeleton inside.',
+  'antennae':      'Long, thin feelers on an animal\'s head used to sense the world — touch, smell, and taste.',
+  'abdomen':       'The soft lower or back part of an animal\'s body. In hermit crabs, this is tucked inside a shell.',
+  'pincers':       'The claw-like gripping tools at the front of crabs and lobsters, used to grab food and defend themselves.',
+  'coral reefs':   'Underwater structures built by tiny animals called corals. They are home to hundreds of sea creatures.',
+  'habitat':       'The natural place where an animal lives and finds everything it needs to survive.',
+  'endangered':    'When a type of animal is at serious risk of disappearing forever if we do not protect it.',
+  'extinct':       'When a type of animal no longer exists anywhere in the world.',
+  'scutes':        'Bony plates that make up the outer layer of a turtle\'s shell — like a built-in suit of armour.',
+  'fungi':         'Living things like mushrooms and moulds that break down organic matter. They are neither plants nor animals.',
+  'spines':        'Sharp, pointed structures on an animal\'s body used for protection or defence against predators.',
+  'flutes':        'Deep grooves or channels carved into a surface — like the ridges on the giant clam\'s shell.',
+  'omnivore':      'An animal that eats both plants and animals.',
+  'low tide':      'When the sea pulls back and the shore is exposed. Many shore animals become active at this time.',
+  'scavenger':     'An animal that feeds on dead plants or animals, helping to recycle nutrients in the ecosystem.',
+};
+
+// ─────────────────────────────────────────────
+// ANIMAL DATA
+// ─────────────────────────────────────────────
+const ANIMALS = {
+
+  hermit: {
+    title: 'Orange-Striped <em>Hermit Crab</em>',
+    subtitle: 'The shell-borrowing shore wanderer',
+    emoji: '🦀',
+    heroImage: 'images/image1b.png',
+    heroBg: '#1A4A6B',
+    tabColor: '#E8633A',
+
+    meet: {
+      cards: [
+        {
+          icon: '👀',
+          title: 'What does it look like?',
+          text: 'The Orange-Striped Hermit Crab has two claws called <span class="tooltip-word" data-tip="pincers">pincers</span> that are orange with white bumps. Its four walking legs are brown with orange stripes. It carries its home — usually an empty snail shell — everywhere it goes for protection. It also has four very short legs used to hold tightly onto the inside of the shell.'
+        },
+        {
+          icon: '🏖️',
+          title: 'Where does it live?',
+          text: 'It can be found in <span class="tooltip-word" data-tip="mangroves">mangroves</span>, on shores, and among <span class="tooltip-word" data-tip="seagrasses">seagrasses</span>. In Singapore, you can find Orange-Striped Hermit Crabs on the sand bars of Chek Jawa Wetlands and the seagrass flats of Changi Beach.'
+        },
+        {
+          icon: '🦐',
+          title: 'What does it eat?',
+          text: 'It is an <span class="tooltip-word" data-tip="omnivore">omnivore</span> and <span class="tooltip-word" data-tip="scavenger">scavenger</span> — it eats almost anything it finds, from <span class="tooltip-word" data-tip="algae">algae</span> to dead animals! This makes it an important part of the ecosystem, helping to clean up and recycle nutrients.'
+        }
+      ],
+      images: [
+        {url: 'images/image1b.png', cap: 'Orange-Striped Hermit Crab'},
+        {url: 'images/image1d.png', cap: 'Hermit Crab on the shore'},
+        {url: 'images/image1f.png', cap: 'Hermit Crab eating fruits'}
+      ]
+    },
+
+    didyouknow: {
+      facts: [
+        'The Orange-Striped Hermit Crab is mostly active at <span class="tooltip-word" data-tip="low tide">low tide</span>.',
+        'As it grows in size, it changes to a bigger shell. When it is in danger, it hides deep inside its shell for protection.',
+        'It can fight with other hermit crabs over a shell that it wants.',
+        'It can walk forward, backwards and diagonally!',
+        'It recycles dead matter as a <span class="tooltip-word" data-tip="scavenger">scavenger</span>. It is also food for fishes, birds and other crabs.',
+        'Do not collect shells from beaches! Hermit crabs need them for protection. Without their shells, they will eventually dry out and die.'
+      ]
+    },
+
+    funfacts: {
+      text: `The hermit crab is not actually a true crab! It is more closely related to lobsters and shrimps. There are about 500 different kinds of hermit crab in the world.
+
+Hermit crabs have stalked eyes that can move in different directions, and two pairs of <span class="tooltip-word" data-tip="antennae">antennae</span> — one for feeling and touching, and one for smelling and tasting.
+
+Their soft <span class="tooltip-word" data-tip="abdomen">abdomen</span> is specially shaped to curl tightly inside a spiral snail shell. They grip the inside using tiny hooked legs at the end of their body.
+
+Some hermit crabs even carry sea anemones on their shells for extra protection — the anemone gets a free ride, and the hermit crab gets a bodyguard!`,
+      images: [
+        {url: 'images/image1e.png', cap: 'Hermit crab in its natural habitat'}
+      ],
+      video: 'k1P24jvrF8g'
+    },
+
+    conservation: {
+      status: 'not_assessed',
+      text: `Hermit crabs are not currently classified as endangered, but they face real threats. Their shells — which are empty snail shells — are being taken from beaches by people as souvenirs. Without enough shells, hermit crabs cannot grow and are left exposed to danger.
+
+Coastal development and pollution also destroy the <span class="tooltip-word" data-tip="mangroves">mangroves</span> and shores where hermit crabs live. Plastic rubbish in the ocean is a growing threat — some hermit crabs have been found trying to use plastic bottle caps as shells, which can trap and injure them.
+
+The pet trade removes millions of hermit crabs from the wild every year. Since they cannot breed in captivity, all pet hermit crabs come from the wild.`,
+      actions: [
+        '🐚 Never take shells from the beach — a hermit crab might need them!',
+        '🛍️ Reduce plastic waste — bring your own bag and water bottle.',
+        '📣 Tell your family and friends about the threats hermit crabs face.',
+      ],
+      learnMore: 'To find out more about Sisters\' Islands Marine Park, home to the Hermit Crab, visit <a href="https://www.nparks.gov.sg/sistersislandsmarinepark" target="_blank">www.nparks.gov.sg/sistersislandsmarinepark</a>'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  flower: {
+    title: '<em>Flower</em> Crab',
+    subtitle: 'The colourful swimmer of Singapore\'s shores',
+    emoji: '🦀',
+    heroImage: 'images/image2b.png',
+    heroBg: '#1B5E7B',
+    tabColor: '#2196A6',
+
+    meet: {
+      cards: [
+        {
+          icon: '👀',
+          title: 'What does it look like?',
+          text: 'A Flower Crab has eight walking legs and two <span class="tooltip-word" data-tip="pincers">pincers</span>. Its last pair of legs is shaped like paddles, which helps it swim well! Male and female Flower Crabs look very different. Males have striking blue markings and attractive patterns. Females have dull green and brown bodies. Male pincers can be two to three times longer than the width of their bodies!'
+        },
+        {
+          icon: '🏖️',
+          title: 'Where does it live?',
+          text: 'It can be found on many of Singapore\'s shores. It likes to live in shallow waters with muddy or sandy seabeds. It cannot survive for long out of water. When it senses danger or gets trapped in a tidal pool, it buries itself in sand or mud. Smaller Flower Crabs hide among <span class="tooltip-word" data-tip="seagrasses">seagrasses</span> and seaweed.'
+        },
+        {
+          icon: '🦐',
+          title: 'What does it eat?',
+          text: 'It mostly eats slow-moving creatures found at the bottom of the sea, such as snails, clams and worms. It may also eat fish, shrimp and smaller crabs. The Flower Crab itself is edible and is used in dishes such as chilli crab and crab bee hoon.'
+        }
+      ],
+      images: [
+        {url: 'images/image2b.png', cap: 'Male Flower Crab with blue markings'},
+        {url: 'images/image2c.png', cap: 'Flower Crab on sandy bottom'},
+        {url: 'images/image2d.png', cap: 'Flower Crab eating fish'}
+      ]
+    },
+
+    didyouknow: {
+      facts: [
+        'It is not easy to spot a Flower Crab! When it senses danger, it buries itself in sand or mud.',
+        'When Flower Crabs are in danger, they spread out their <span class="tooltip-word" data-tip="pincers">pincers</span>. The red tips serve as a warning to other animals.',
+        'Their hard shells covered in <span class="tooltip-word" data-tip="spines">spines</span> also protect them from predators.',
+        'The Flower Crab can only mate right after the female sheds her <span class="tooltip-word" data-tip="exoskeleton">exoskeleton</span>, before her new one hardens.',
+        'The male Flower Crab is often seen holding onto the female — he is waiting for the chance to mate and keeping other males away!',
+        'The Flower Crab is edible and used in dishes like chilli crab and crab bee hoon.'
+      ]
+    },
+
+    funfacts: {
+      text: `The Flower Crab gets its name from the beautiful flower-like patterns on its shell, especially visible on the male.
+
+Its paddle-shaped back legs make it a surprisingly fast swimmer — most crabs can only walk, but the Flower Crab can swim through the water with ease.
+
+The Flower Crab belongs to a group called swimming crabs. Its scientific name is <em>Portunus pelagicus</em>. It is one of the most commercially important crabs in Asia, and is widely eaten across Singapore and the region.
+
+Like all crabs, it sheds its <span class="tooltip-word" data-tip="exoskeleton">exoskeleton</span> as it grows bigger. Right after shedding, its new shell is soft and it is very vulnerable to attack.`,
+      images: [
+        {url: 'images/image2e.png', cap: 'Flower Crab showing paddle legs'}
+      ],
+      video: 'HDN0TprZexs'
+    },
+
+    conservation: {
+      status: 'not_assessed',
+      text: `The Flower Crab is not currently classified as <span class="tooltip-word" data-tip="endangered">endangered</span>, but populations in some areas are under pressure from overfishing, as it is a popular seafood item.
+
+<span class="tooltip-word" data-tip="habitat">Habitat</span> loss is also a concern — the shallow sandy and muddy shores and <span class="tooltip-word" data-tip="seagrasses">seagrass</span> beds it depends on are being lost to coastal development.
+
+Singapore has taken steps to protect its marine <span class="tooltip-word" data-tip="habitat">habitats</span>, including through Sisters' Islands Marine Park.`,
+      actions: [
+        '🦀 Do not collect crabs or disturb them on the shore.',
+        '🌊 Help keep our beaches and waterways clean from litter.',
+        '🐟 Choose sustainably sourced seafood where possible.',
+      ],
+      learnMore: 'To find out more about how NParks is helping to conserve Singapore\'s endangered crab species, visit <a href="https://go.gov.sg/endangered-singapore-crab" target="_blank">go.gov.sg/endangered-singapore-crab</a>'
+    }
+  },
+
+  // ─────────────────────────────────────────────
+  clam: {
+    title: 'Fluted <em>Giant Clam</em>',
+    subtitle: 'Singapore\'s gentle giant of the reef',
+    emoji: '🐚',
+    heroImage: 'images/image3b.png',
+    heroBg: '#1A3D5C',
+    tabColor: '#0077B6',
+
+    meet: {
+      cards: [
+        {
+          icon: '👀',
+          title: 'What does it look like?',
+          text: 'Fluted Giant Clams come in different colours and patterns. They are 15 to 30 cm long. The shell has two thick halves that open like "lips" with a wavy opening — they do not close completely! The opening always faces the sunlight. When in water, its colourful "lips" expand and open wide. The shell has rows of deep open grooves called <span class="tooltip-word" data-tip="flutes">flutes</span> — that is where it gets its name!'
+        },
+        {
+          icon: '🌊',
+          title: 'Where does it live?',
+          text: 'The Fluted Giant Clam attaches itself to rocks or broken pieces of <span class="tooltip-word" data-tip="coral reefs">coral</span>. It lives in shallow tropical waters. Due to over-collection and loss of <span class="tooltip-word" data-tip="habitat">habitat</span>, the Fluted Giant Clam now occurs in very low numbers in Singapore and could soon be locally <span class="tooltip-word" data-tip="extinct">extinct</span>.'
+        },
+        {
+          icon: '☀️',
+          title: 'What does it eat?',
+          text: 'The Fluted Giant Clam gets its food from tiny <span class="tooltip-word" data-tip="algae">algae</span> that live inside its body! The algae use sunlight to make food through photosynthesis, and they share this food with the clam. This is why the clam always keeps its opening facing the sun — it is like a living solar panel!'
+        }
+      ],
+      images: [
+        {url: 'images/image3b.png', cap: 'Fluted Giant Clam with colorful lips'},
+        {url: 'images/image3c.png', cap: 'Giant clam attached to reef rock'},
+        {url: 'images/image3d.png', cap: 'Close-up of fluted shell grooves'}
+      ],
+    },
+
+    didyouknow: {
+      facts: [
+        'The Fluted Giant Clam got its name from the rows of deep open <span class="tooltip-word" data-tip="flutes">flutes</span> on the two halves of its shell.',
+        'It has both male and female reproductive organs — it produces both eggs and sperm!',
+        'Its "lips" are sensitive to light and pull back when a diver swims over it or when it senses danger.',
+        'It has a row of tiny eyespots along the edge of its "lips" to help it detect danger.',
+        'It can squirt a jet of water accurately to scare away animals that want to eat it!',
+        'Fluted Giant Clams provide food and shelter to other sea animals, and help clean the seawater. When they die, their shells become part of the <span class="tooltip-word" data-tip="coral reefs">coral reef</span>.'
+      ]
+    },
+
+    funfacts: {
+      text: `The Fluted Giant Clam is one of six giant clam species found in Singapore. It is smaller than the famous Giant Clam (<em>Tridacna gigas</em>), which can weigh over 200 kg!
+
+The tiny <span class="tooltip-word" data-tip="algae">algae</span> living inside the clam's body give its lips their vivid colours — blue, green, brown, and purple. Every clam has a unique pattern, like a fingerprint.
+
+Giant clams can live for over 100 years in the wild. They grow slowly — only a few centimetres per year. This slow growth makes it very hard for populations to recover once they are depleted.
+
+The Fluted Giant Clam plays an important role in the reef ecosystem. It filters large amounts of seawater, helping keep the ocean clean and healthy.`,
+      images: [{url: 'images/image3e.png', cap: 'White Shell of Giant Clam'}],
+      video: '55kj4ehTD7I'
+    },
+
+    conservation: {
+      status: 'endangered',
+      text: `Fluted Giant Clams are now <span class="tooltip-word" data-tip="endangered">endangered</span>. This is due to their slow growth and reproduction, and people collecting them for their shells and as food.
+
+In Singapore, the Fluted Giant Clam species now occurs in very low numbers and could soon be locally <span class="tooltip-word" data-tip="extinct">extinct</span>.
+
+NParks (the National Parks Board) is working to protect the Fluted Giant Clam through conservation programmes at Sisters' Islands Marine Park. Researchers have been breeding clams in captivity and releasing them back onto our reefs to boost wild populations.`,
+      actions: [
+        '🐚 Never collect shells, living or empty, from the shore.',
+        '🤿 If diving or snorkelling, do not touch or disturb giant clams.',
+        '🌊 Reduce pollution — chemicals and rubbish harm coral reefs where clams live.',
+        '📣 Spread the word — very few people know this animal is endangered right here in Singapore!',
+      ],
+      learnMore: 'To find out more about Sisters\' Islands Marine Park, home to the Fluted Giant Clam, visit <a href="https://www.nparks.gov.sg/sistersislandsmarinepark" target="_blank">www.nparks.gov.sg/sistersislandsmarinepark</a>'
+    }
+  }
+};
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let currentAnimal = 'hermit';
+let currentTab = 'meet';
+
+// ─────────────────────────────────────────────
+// SWITCH ANIMAL
+// ─────────────────────────────────────────────
+function switchAnimal(key) {
+  currentAnimal = key;
+  currentTab = 'meet';
+
+  // Update selector buttons
+  document.querySelectorAll('.animal-btn').forEach((b, i) => {
+    const keys = ['hermit','flower','clam'];
+    b.classList.toggle('active', keys[i] === key);
+  });
+
+  const a = ANIMALS[key];
+
+  // Update hero
+  document.getElementById('heroTitle').innerHTML = a.title;
+  document.getElementById('heroSubtitle').textContent = a.subtitle;
+  document.getElementById('heroEmoji').textContent = a.emoji;
+  document.getElementById('hero').style.background = a.heroBg;
+
+  const img = document.getElementById('heroImg');
+  if (a.heroImage) {
+    img.src = a.heroImage;
+    img.classList.remove('loaded');
+  } else {
+    img.src = '';
+    img.classList.remove('loaded');
+  }
+
+  // Update tab active colour via CSS variable on :root can't be dynamic easily,
+  // so we apply inline on active tab
+  renderTabs();
+  renderAllPanels();
+
+  // Scroll to top smoothly
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─────────────────────────────────────────────
+// SWITCH TAB
+// ─────────────────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  renderTabs();
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${tab}`).classList.add('active');
+}
+
+function renderTabs() {
+  const tabs = [
+    { id: 'meet',         label: '👀 Meet the Animal' },
+    { id: 'didyouknow',  label: '💡 Did You Know?' },
+    { id: 'funfacts',    label: '🌟 More Facts' },
+    { id: 'conservation',label: '🌍 Conservation' },
+  ];
+
+  const bar = document.getElementById('tabsBar');
+  bar.innerHTML = tabs.map(t => `
+    <button class="tab-btn ${t.id === currentTab ? 'active' : ''}" onclick="switchTab('${t.id}')">
+      ${t.label}
+    </button>
+  `).join('');
+}
+
+// ─────────────────────────────────────────────
+// RENDER ALL PANELS
+// ─────────────────────────────────────────────
+function renderAllPanels() {
+  const a = ANIMALS[currentAnimal];
+  renderMeet(a.meet);
+  renderDidYouKnow(a.didyouknow);
+  renderFunFacts(a.funfacts);
+  renderConservation(a.conservation);
+
+  // Reactivate current tab
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${currentTab}`).classList.add('active');
+
+  attachTooltips();
+}
+
+// ─────────────────────────────────────────────
+// PANEL RENDERERS
+// ─────────────────────────────────────────────
+function renderMeet(data) {
+  const el = document.getElementById('panel-meet');
+
+  const cards = data.cards.map(c => `
+    <div class="info-card">
+      <h3>${c.icon} ${c.title}</h3>
+      <p>${c.text}</p>
+    </div>
+  `).join('');
+
+  const imgs = data.images.length ? `
+    <div class="img-grid">
+      ${data.images.map(i => `
+        <div class="img-card">
+          <img src="${i.url}" alt="${i.cap}" onerror="this.parentElement.style.display='none'">
+          <div class="img-card-cap">${i.cap}</div>
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
+
+  const vid = data.video ? `
+    <div class="video-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/${data.video}"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
+  ` : '';
+
+  el.innerHTML = `
+    <h2 class="section-title">👀 Meet the Animal</h2>
+    <div class="section-divider"></div>
+    <div class="info-grid">${cards}</div>
+    ${imgs}
+    ${vid}
+  `;
+}
+
+function renderDidYouKnow(data) {
+  const el = document.getElementById('panel-didyouknow');
+  const facts = data.facts.map((f, i) => `
+    <div class="fact-card">
+      <div class="fact-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="fact-text">${f}</div>
+    </div>
+  `).join('');
+
+  el.innerHTML = `
+    <h2 class="section-title">💡 Did You Know?</h2>
+    <div class="section-divider"></div>
+    ${facts}
+  `;
+}
+
+function renderFunFacts(data) {
+  const el = document.getElementById('panel-funfacts');
+
+  // Use full-width layout for single images, grid for multiple
+  const imgs = data.images && data.images.length ? (
+    data.images.length === 1 ? `
+      <div class="fullwidth-img-wrap">
+        <img src="${data.images[0].url}" alt="${data.images[0].cap}" onerror="this.parentElement.style.display='none'">
+        <div class="fullwidth-img-cap">${data.images[0].cap}</div>
+      </div>
+    ` : `
+      <div class="img-grid">
+        ${data.images.map(i => `
+          <div class="img-card">
+            <img src="${i.url}" alt="${i.cap}" onerror="this.parentElement.style.display='none'">
+            <div class="img-card-cap">${i.cap}</div>
+          </div>
+        `).join('')}
+      </div>
+    `
+  ) : '';
+
+  const vid = data.video ? `
+    <div class="video-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/${data.video}"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
+  ` : '';
+
+  const paragraphs = data.text.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('');
+
+  el.innerHTML = `
+    <h2 class="section-title">🌟 More Facts</h2>
+    <div class="section-divider"></div>
+    ${imgs}
+    <div class="text-block">${paragraphs}</div>
+    ${vid}
+  `;
+}
+
+function renderConservation(data) {
+  const el = document.getElementById('panel-conservation');
+
+  const statusMap = {
+    'not_assessed': { cls: 'status-warn',   icon: '⚠️', label: 'Not Officially Assessed (IUCN)' },
+    'least_concern':{ cls: 'status-ok',     icon: '✅', label: 'Least Concern' },
+    'endangered':   { cls: 'status-danger', icon: '🔴', label: 'Endangered' },
+    'vulnerable':   { cls: 'status-warn',   icon: '🟠', label: 'Vulnerable' },
+  };
+
+  const s = statusMap[data.status] || statusMap['not_assessed'];
+
+  const paragraphs = data.text.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('');
+
+  const actions = data.actions.map(a => `<li>${a}</li>`).join('');
+
+  const learnMore = data.learnMore ? `
+    <div class="learn-more">🔗 ${data.learnMore}</div>
+  ` : '';
+
+  el.innerHTML = `
+    <h2 class="section-title">🌍 Conservation</h2>
+    <div class="section-divider"></div>
+    <div class="status-badge ${s.cls}">${s.icon} Conservation Status: ${s.label}</div>
+    <div class="text-block">${paragraphs}</div>
+    <div class="action-box">
+      <h3>💚 What Can You Do?</h3>
+      <ul>${actions}</ul>
+    </div>
+    ${learnMore}
+  `;
+}
+
+// ─────────────────────────────────────────────
+// TOOLTIPS
+// ─────────────────────────────────────────────
+function attachTooltips() {
+  const popup = document.getElementById('tooltipPopup');
+
+  document.querySelectorAll('.tooltip-word').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      const tip = TOOLTIPS[el.dataset.tip];
+      if (!tip) return;
+      document.getElementById('tipWord').textContent =
+        el.dataset.tip.charAt(0).toUpperCase() + el.dataset.tip.slice(1);
+      document.getElementById('tipDef').textContent = tip;
+      popup.classList.add('show');
+
+      const rect = el.getBoundingClientRect();
+      let top  = rect.bottom + 8;
+      let left = rect.left;
+      if (left + 270 > window.innerWidth - 12) left = window.innerWidth - 282;
+      if (top + 110  > window.innerHeight - 12) top = rect.top - 118;
+      popup.style.top  = top  + 'px';
+      popup.style.left = left + 'px';
+    });
+  });
+
+  document.addEventListener('click', () => popup.classList.remove('show'));
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderTabs();
+  renderAllPanels();
+});
+</script>
+</body>
+</html>
