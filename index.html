@@ -310,6 +310,31 @@
 
   .info-card p { font-size: 17px; line-height: 1.75; color: #444; }
 
+  /* ── INLINE IMAGES (within info cards) ── */
+  .inline-img-wrap {
+    margin: 16px 0;
+    text-align: center;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+  .inline-img-wrap img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+  .inline-img-cap {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    text-align: center;
+  }
+
   /* ── IMAGE GRID ── */
   .img-grid {
     display: grid;
@@ -495,24 +520,25 @@
 // TOOLTIP DICTIONARY
 // ─────────────────────────────────────────────
 const TOOLTIPS = {
-  'mangroves':     'Coastal forests with tangled roots that grow in shallow, salty water. Many animals live in them.',
-  'seagrasses':    'Underwater plants that grow in shallow coastal waters. They provide food and shelter for sea animals.',
-  'algae':         'Simple plant-like living things that grow in water, often green or brown. Many sea animals eat them.',
-  'exoskeleton':   'A hard outer shell that protects an animal\'s body — like armour on the outside instead of a skeleton inside.',
-  'antennae':      'Long, thin feelers on an animal\'s head used to sense the world — touch, smell, and taste.',
-  'abdomen':       'The soft lower or back part of an animal\'s body. In hermit crabs, this is tucked inside a shell.',
-  'pincers':       'The claw-like gripping tools at the front of crabs and lobsters, used to grab food and defend themselves.',
-  'coral reefs':   'Underwater structures built by tiny animals called corals. They are home to hundreds of sea creatures.',
-  'habitat':       'The natural place where an animal lives and finds everything it needs to survive.',
-  'endangered':    'When a type of animal is at serious risk of disappearing forever if we do not protect it.',
-  'extinct':       'When a type of animal no longer exists anywhere in the world.',
-  'scutes':        'Bony plates that make up the outer layer of a turtle\'s shell — like a built-in suit of armour.',
-  'fungi':         'Living things like mushrooms and moulds that break down organic matter. They are neither plants nor animals.',
-  'spines':        'Sharp, pointed structures on an animal\'s body used for protection or defence against predators.',
-  'flutes':        'Deep grooves or channels carved into a surface — like the ridges on the giant clam\'s shell.',
-  'omnivore':      'An animal that eats both plants and animals.',
-  'low tide':      'When the sea pulls back and the shore is exposed. Many shore animals become active at this time.',
-  'scavenger':     'An animal that feeds on dead plants or animals, helping to recycle nutrients in the ecosystem.',
+  'mangroves':     'Coastal forests with roots that grow in shallow, salty water. Many animals live in them.',
+  'seagrasses':    'Underwater plants that grow in shallow waters at the beach. They provide food and shelter for animals.',
+  'algae':         'Simple plant-like living things that grow in water. They are often green or brown. Many sea animals eat them.',
+  'exoskeleton':   'A hard outer shell that protects an animal\'s body — The skeleton is on the outside instead of inside their body.',
+  'antennae':      'Long, thin feelers on an animal\'s head used to touch, smell, and taste.',
+  'abdomen':       'The lower or back part of an animal\'s body. In hermit crabs, it is inside a shell.',
+  'pincers':       'The claws of the crabs and lobsters. Pincers are used to grab food and defend themselves.',
+  'coral reefs':   'Found underwater. Corals are made by other small animals. They are home to hundreds of sea creatures.',
+  'habitat':       'The home of animals. Where animals live.',
+  'endangered':    'An animal is may disappear forever if we do not protect it.',
+  'extinct':       'When an animal is not around in the world anymore.',
+  'scutes':        'Bony plates on the outer layer of a turtle\'s shell. It is like an armour.',
+  'fungi':         'Mushrooms and moulds that break down plants or animals. They are not plants or animals.',
+  'spines':        'Sharp, pointed bones on an animal\'s body. It is for protection against animals.',
+  'flutes':        'Deep parts curved into a surface — like the clam\'s shell.',
+  'omnivore':      'Eats plants and animals.',
+  'low tide':      'When the seawater is low. More sand is seen. Many animals move around at this time.',
+  'scavenger':     'An animal that eats dead plants or animals. It helps to recycle nutrients into the environment.',
+  'anemones':      'A sea anemone is a soft ocean animal with wiggly arms that looks like a flower. It catches food with its tentacles.',
 };
 
 // ─────────────────────────────────────────────
@@ -533,34 +559,60 @@ const ANIMALS = {
         {
           icon: '👀',
           title: 'What does it look like?',
-          text: 'The Orange-Striped Hermit Crab has two claws called <span class="tooltip-word" data-tip="pincers">pincers</span> that are orange with white bumps. Its four walking legs are brown with orange stripes. It carries its home — usually an empty snail shell — everywhere it goes for protection. It also has four very short legs used to hold tightly onto the inside of the shell.'
+          content: [
+            {type: 'text', text: 'The Orange-Striped Hermit Crab has two claws called <span class="tooltip-word" data-tip="pincers">pincers</span>. The pincers are orange with white bumps.'},
+            {type: 'image', url: 'images/image1a.jpg', cap: 'Hermit crab pincers'},
+            {type: 'text', text: ' <br> Its four walking legs are brown with orange stripes. <br> <br> It carries its home — usually an empty snail shell — everywhere it goes. This is to protect themselves. It uses four very short legs to hold tightly to the shell.'},
+            {type: 'image', url: 'images/Orange Crab Shell.jpg', cap: 'Hermit crab carrying its shell'},
+          ]
         },
         {
           icon: '🏖️',
           title: 'Where does it live?',
-          text: 'It can be found in <span class="tooltip-word" data-tip="mangroves">mangroves</span>, on shores, and among <span class="tooltip-word" data-tip="seagrasses">seagrasses</span>. In Singapore, you can find Orange-Striped Hermit Crabs on the sand bars of Chek Jawa Wetlands and the seagrass flats of Changi Beach.'
+          content: [
+          {type: 'text', text: 'It can be found in <span class="tooltip-word" data-tip="mangroves">mangroves</span>, shores, and among <span class="tooltip-word" data-tip="seagrasses">seagrasses</span>.'}, 
+          {type: 'image', url: 'images/Mangroves.jpg', cap: 'A mangrove'},
+        
+          {type: 'text', text: '<br> In Singapore, you can find Orange-Striped Hermit Crabs on the sand bars of Chek Jawa Wetlands and the seagrass flats of Changi Beach.'},
+          {type: 'image', url: 'images/seagrass.jpg', cap: 'Seagrass in the ocean'},
+           ]
         },
         {
           icon: '🦐',
           title: 'What does it eat?',
-          text: 'It is an <span class="tooltip-word" data-tip="omnivore">omnivore</span> and <span class="tooltip-word" data-tip="scavenger">scavenger</span> — it eats almost anything it finds, from <span class="tooltip-word" data-tip="algae">algae</span> to dead animals! This makes it an important part of the ecosystem, helping to clean up and recycle nutrients.'
+          content: [
+          {type: 'text', text: 'It is an <span class="tooltip-word" data-tip="omnivore">omnivore</span> and <span class="tooltip-word" data-tip="scavenger">scavenger</span>. It eats almost anything it finds, such as <span class="tooltip-word" data-tip="algae">algae</span> to dead animals! This makes it an important part of the environment, helping to clean up and recycle nutrients.'},
+          {type: 'image', url: 'images/image1d.jpg', cap: 'Algae'},
+          ]
         }
       ],
       images: [
-        {url: 'images/image1b.png', cap: 'Orange-Striped Hermit Crab'},
-        {url: 'images/image1d.png', cap: 'Hermit Crab on the shore'},
-        {url: 'images/image1f.png', cap: 'Hermit Crab eating fruits'}
+        {url: 'images/image1b.jpg'},
+        {url: 'images/image1a.jpg'},
+        {url: 'images/image1d.jpg'}
       ]
     },
 
     didyouknow: {
       facts: [
         'The Orange-Striped Hermit Crab is mostly active at <span class="tooltip-word" data-tip="low tide">low tide</span>.',
-        'As it grows in size, it changes to a bigger shell. When it is in danger, it hides deep inside its shell for protection.',
-        'It can fight with other hermit crabs over a shell that it wants.',
+        'As it grows in size, it changes to a bigger shell. <br> <br> When it is in danger, it hides deep inside its shell for protection.',
+        { 
+          type: 'mixed', 
+          content: [
+            { type: 'text', text: 'It can fight with other hermit crabs over a shell that it wants.' },
+            { type: 'image', url: 'images/image1b.jpg', caption: 'Hermit crab competing for a shell' }
+          ]
+        },
         'It can walk forward, backwards and diagonally!',
-        'It recycles dead matter as a <span class="tooltip-word" data-tip="scavenger">scavenger</span>. It is also food for fishes, birds and other crabs.',
-        'Do not collect shells from beaches! Hermit crabs need them for protection. Without their shells, they will eventually dry out and die.'
+        { 
+          type: 'mixed', 
+          content: [
+            { type: 'text', text: 'It recycles dead matter as a <span class="tooltip-word" data-tip="scavenger">scavenger</span>. <br> <br> It is also food for fishes, birds and other crabs.' },
+            { type: 'image', url: 'images/Bird eat hermit crab.jpg', caption: 'A bird eating a hermit crab' }
+          ]
+        },
+        'Do not collect shells from beaches! <br> <br> Hermit crabs need them for protection. Without their shells, they will eventually dry out and die.'
       ]
     },
 
@@ -571,7 +623,7 @@ Hermit crabs have stalked eyes that can move in different directions, and two pa
 
 Their soft <span class="tooltip-word" data-tip="abdomen">abdomen</span> is specially shaped to curl tightly inside a spiral snail shell. They grip the inside using tiny hooked legs at the end of their body.
 
-Some hermit crabs even carry sea anemones on their shells for extra protection — the anemone gets a free ride, and the hermit crab gets a bodyguard!`,
+Some hermit crabs even carry sea <span class="tooltip-word" data-tip="anemones">anemones</span> on their shells for extra protection — the anemone gets a free ride, and the hermit crab gets a bodyguard!`,
       images: [
         {url: 'images/image1e.png', cap: 'Hermit crab in its natural habitat'}
       ],
@@ -580,11 +632,17 @@ Some hermit crabs even carry sea anemones on their shells for extra protection �
 
     conservation: {
       status: 'not_assessed',
-      text: `Hermit crabs are not currently classified as endangered, but they face real threats. Their shells — which are empty snail shells — are being taken from beaches by people as souvenirs. Without enough shells, hermit crabs cannot grow and are left exposed to danger.
-
-Coastal development and pollution also destroy the <span class="tooltip-word" data-tip="mangroves">mangroves</span> and shores where hermit crabs live. Plastic rubbish in the ocean is a growing threat — some hermit crabs have been found trying to use plastic bottle caps as shells, which can trap and injure them.
-
-The pet trade removes millions of hermit crabs from the wild every year. Since they cannot breed in captivity, all pet hermit crabs come from the wild.`,
+      content: [
+        { type: 'text', text: 'Hermit crabs are not endangered, but they face real threats. Their shells are being taken from beaches by people as souvenirs. With no shells, hermit crabs cannot grow and are left exposed to danger.' },
+        { 
+          type: 'mixed', 
+          items: [
+            { type: 'text', text: 'Coastal development and pollution also destroy the <span class="tooltip-word" data-tip="mangroves">mangroves</span> and shores where hermit crabs live. Plastic rubbish in the ocean is a growing threat — some hermit crabs have been found trying to use plastic bottle caps as shells, which can trap and injure them.' },
+            { type: 'image', url: 'images/Hermit crab plastic cap.jpg', caption: 'Hermit crab using a plastic bottle cap as a shell' }
+          ]
+        },
+        { type: 'text', text: 'The pet trade removes millions of hermit crabs from the wild every year. Since they cannot breed in captivity, all pet hermit crabs come from the wild.' }
+      ],
       actions: [
         '🐚 Never take shells from the beach — a hermit crab might need them!',
         '🛍️ Reduce plastic waste — bring your own bag and water bottle.',
@@ -608,17 +666,30 @@ The pet trade removes millions of hermit crabs from the wild every year. Since t
         {
           icon: '👀',
           title: 'What does it look like?',
-          text: 'A Flower Crab has eight walking legs and two <span class="tooltip-word" data-tip="pincers">pincers</span>. Its last pair of legs is shaped like paddles, which helps it swim well! Male and female Flower Crabs look very different. Males have striking blue markings and attractive patterns. Females have dull green and brown bodies. Male pincers can be two to three times longer than the width of their bodies!'
+          content: [
+            {type: 'text', text: 'A Flower Crab has eight walking legs and two <span class="tooltip-word" data-tip="pincers">pincers</span>. Its last pair of legs is shaped like paddles, which helps it swim well!'},
+            {type: 'image', url: 'images/flower crab.jpg', cap: 'Flower crab with paddle-shaped legs'},
+            {type: 'text', text: '<br> <br> Male and female Flower Crabs look very different. Males have blue markings and interesting patterns. Females have dull green and brown bodies. Male pincers can be two to three times longer than the length of their bodies!'},
+            {type: 'image', url: 'images/male and female flower crab.jpg', cap: 'Male and female flower crab showing different colours'}
+          ]
         },
         {
           icon: '🏖️',
           title: 'Where does it live?',
-          text: 'It can be found on many of Singapore\'s shores. It likes to live in shallow waters with muddy or sandy seabeds. It cannot survive for long out of water. When it senses danger or gets trapped in a tidal pool, it buries itself in sand or mud. Smaller Flower Crabs hide among <span class="tooltip-word" data-tip="seagrasses">seagrasses</span> and seaweed.'
+          content: [
+            {type: 'text', text: 'It can be found on many of Singapore\'s shores. It likes to live in shallow waters with muddy or sandy floors. Smaller flower crabs hide in <span class="tooltip-word" data-tip="seagrasses">seagrasses</span> and seaweed. <br> <br> It cannot survive for long out of water. When it is in danger or gets trapped in the water, it buries itself in sand or mud.'},
+            {type: 'image', url: 'images/flower crab bury itself.jpg', cap: 'Flower crab burying itself in sand for protection'}
+          ]
         },
         {
           icon: '🦐',
           title: 'What does it eat?',
-          text: 'It mostly eats slow-moving creatures found at the bottom of the sea, such as snails, clams and worms. It may also eat fish, shrimp and smaller crabs. The Flower Crab itself is edible and is used in dishes such as chilli crab and crab bee hoon.'
+          content: [
+            {type: 'text', text: 'It mostly eats slow-moving creatures found at the bottom of the sea, such as snails, clams and worms. It may also eat fish, shrimp and smaller crabs.'},
+            {type: 'image', url: 'images/flower crab eating.jpg', cap: 'Flower crab eating prey'},
+            {type: 'text', text: '<br> <br> The flower crab itself can be eaten and is used in dishes such as Chilli Crab and Crab Bee Hoon.'},
+            {type: 'image', url: 'images/chilli crab.JPG', cap: 'Chilli Crab - a popular Singapore dish made with flower crab'}
+          ]
         }
       ],
       images: [
@@ -630,23 +701,35 @@ The pet trade removes millions of hermit crabs from the wild every year. Since t
 
     didyouknow: {
       facts: [
-        'It is not easy to spot a Flower Crab! When it senses danger, it buries itself in sand or mud.',
+        'It is not easy to spot a Flower Crab! When it is in danger, it buries itself in sand or mud.',
         'When Flower Crabs are in danger, they spread out their <span class="tooltip-word" data-tip="pincers">pincers</span>. The red tips serve as a warning to other animals.',
         'Their hard shells covered in <span class="tooltip-word" data-tip="spines">spines</span> also protect them from predators.',
-        'The Flower Crab can only mate right after the female sheds her <span class="tooltip-word" data-tip="exoskeleton">exoskeleton</span>, before her new one hardens.',
-        'The male Flower Crab is often seen holding onto the female — he is waiting for the chance to mate and keeping other males away!',
-        'The Flower Crab is edible and used in dishes like chilli crab and crab bee hoon.'
+        { 
+          type: 'mixed', 
+          content: [
+            { type: 'text', text: 'The Flower Crab can only make babies right after the female takes off her <span class="tooltip-word" data-tip="exoskeleton">exoskeleton</span>, before her new one hardens.' },
+            { type: 'image', url: 'images/flower crab takes off skeleton.jpg', caption: 'Flower crab shedding its exoskeleton' }
+          ]
+        },
+        { 
+          type: 'mixed', 
+          content: [
+            { type: 'text', text: 'The male Flower Crab is often seen holding onto the female — he is waiting for the chance to make babies and keep other males away!' },
+            { type: 'image', url: 'images/flower crab mating.jpg', caption: 'Male flower crab holding onto female' }
+          ]
+        },
+        'The Flower Crab can be eaten and is used in dishes like Chilli Crab and Crab Bee Hoon.'
       ]
     },
 
     funfacts: {
-      text: `The Flower Crab gets its name from the beautiful flower-like patterns on its shell, especially visible on the male.
+      text: `The Flower Crab gets its name from the beautiful flower-like patterns on its shell, especially on the male.
 
-Its paddle-shaped back legs make it a surprisingly fast swimmer — most crabs can only walk, but the Flower Crab can swim through the water with ease.
+Its paddle-shaped back legs make it a fast swimmer. Most crabs can only walk, but the Flower Crab can swim through the water easily.
 
-The Flower Crab belongs to a group called swimming crabs. Its scientific name is <em>Portunus pelagicus</em>. It is one of the most commercially important crabs in Asia, and is widely eaten across Singapore and the region.
+The Flower Crab belongs to a group called swimming crabs. Its scientific name is <em>Portunus pelagicus</em>. It is one of the most important crabs in Asia. It is widely eaten in Singapore and in ASEAN.
 
-Like all crabs, it sheds its <span class="tooltip-word" data-tip="exoskeleton">exoskeleton</span> as it grows bigger. Right after shedding, its new shell is soft and it is very vulnerable to attack.`,
+Like all crabs, it drops off its <span class="tooltip-word" data-tip="exoskeleton">exoskeleton</span> as it grows bigger. Right after that, its new shell is soft and it is very easy to be attacked.`,
       images: [
         {url: 'images/image2e.png', cap: 'Flower Crab showing paddle legs'}
       ],
@@ -683,17 +766,26 @@ Singapore has taken steps to protect its marine <span class="tooltip-word" data-
         {
           icon: '👀',
           title: 'What does it look like?',
-          text: 'Fluted Giant Clams come in different colours and patterns. They are 15 to 30 cm long. The shell has two thick halves that open like "lips" with a wavy opening — they do not close completely! The opening always faces the sunlight. When in water, its colourful "lips" expand and open wide. The shell has rows of deep open grooves called <span class="tooltip-word" data-tip="flutes">flutes</span> — that is where it gets its name!'
+          content: [
+            {type: 'text', text: 'Fluted Giant Clams come in different colours and patterns. They are 15 to 30 cm long. <br> <br> The shell has two thick halves that open like "lips" with a wavy opening. They do not close completely! The opening always faces the sunlight. <br> <br> When in water, its colourful "lips" open wide. The shell has rows of deep open grooves called <span class="tooltip-word" data-tip="flutes">flutes</span>. It is where it gets its name!'},
+            {type: 'image', url: 'images/fluted giant clam colorful.jpg', cap: 'Fluted Giant Clam showing colorful lips and shell grooves'}
+          ]
         },
         {
           icon: '🌊',
           title: 'Where does it live?',
-          text: 'The Fluted Giant Clam attaches itself to rocks or broken pieces of <span class="tooltip-word" data-tip="coral reefs">coral</span>. It lives in shallow tropical waters. Due to over-collection and loss of <span class="tooltip-word" data-tip="habitat">habitat</span>, the Fluted Giant Clam now occurs in very low numbers in Singapore and could soon be locally <span class="tooltip-word" data-tip="extinct">extinct</span>.'
+          content: [
+            {type: 'text', text: 'The Fluted Giant Clam sticks itself to rocks or broken pieces of <span class="tooltip-word" data-tip="coral reefs">coral</span>. It lives in shallow tropical waters. <br> <br> Due to people collecting it and loss of <span class="tooltip-word" data-tip="habitat">habitat</span>, there are very few Fluted Giant Clams in Singapore and could soon be <span class="tooltip-word" data-tip="extinct">extinct</span> in Singapore.'},
+            {type: 'image', url: 'images/coral reef.jpg', cap: 'Coral reef habitat where giant clams live'}
+          ]
         },
         {
           icon: '☀️',
           title: 'What does it eat?',
-          text: 'The Fluted Giant Clam gets its food from tiny <span class="tooltip-word" data-tip="algae">algae</span> that live inside its body! The algae use sunlight to make food through photosynthesis, and they share this food with the clam. This is why the clam always keeps its opening facing the sun — it is like a living solar panel!'
+          content: [
+            {type: 'text', text: 'The Fluted Giant Clam gets its food from tiny <span class="tooltip-word" data-tip="algae">algae</span> that live inside its body! The algae uses sunlight to make food and shares this food with the clam. This is why the clam always faces the sun.'},
+            {type: 'image', url: 'images/clam open lips.jpeg', cap: 'Giant clam with lips open to capture sunlight'}
+          ]
         }
       ],
       images: [
@@ -710,18 +802,18 @@ Singapore has taken steps to protect its marine <span class="tooltip-word" data-
         'Its "lips" are sensitive to light and pull back when a diver swims over it or when it senses danger.',
         'It has a row of tiny eyespots along the edge of its "lips" to help it detect danger.',
         'It can squirt a jet of water accurately to scare away animals that want to eat it!',
-        'Fluted Giant Clams provide food and shelter to other sea animals, and help clean the seawater. When they die, their shells become part of the <span class="tooltip-word" data-tip="coral reefs">coral reef</span>.'
+        'Fluted Giant Clams provide food and shelter to other sea animals, and help clean the seawater. <br> <br> When they die, their shells become part of the <span class="tooltip-word" data-tip="coral reefs">coral reef</span>.'
       ]
     },
 
     funfacts: {
       text: `The Fluted Giant Clam is one of six giant clam species found in Singapore. It is smaller than the famous Giant Clam (<em>Tridacna gigas</em>), which can weigh over 200 kg!
 
-The tiny <span class="tooltip-word" data-tip="algae">algae</span> living inside the clam's body give its lips their vivid colours — blue, green, brown, and purple. Every clam has a unique pattern, like a fingerprint.
+The tiny <span class="tooltip-word" data-tip="algae">algae</span> living inside the clam's body give its colourful lips — blue, green, brown, and purple. Every clam has an interesting pattern just like a fingerprint.
 
-Giant clams can live for over 100 years in the wild. They grow slowly — only a few centimetres per year. This slow growth makes it very hard for populations to recover once they are depleted.
+Giant clams can live for over 100 years in the wild. They grow slowly - only a few centimetres per year. <br> <br> This slow growth makes it very hard for populations to recover once they are gone.
 
-The Fluted Giant Clam plays an important role in the reef ecosystem. It filters large amounts of seawater, helping keep the ocean clean and healthy.`,
+The Fluted Giant Clam plays an important role in the coral reef ecosystem. It cleans large amounts of seawater, helping keep the ocean clean and healthy.`,
       images: [{url: 'images/image3e.png', cap: 'White Shell of Giant Clam'}],
       video: '55kj4ehTD7I'
     },
@@ -730,7 +822,7 @@ The Fluted Giant Clam plays an important role in the reef ecosystem. It filters 
       status: 'endangered',
       text: `Fluted Giant Clams are now <span class="tooltip-word" data-tip="endangered">endangered</span>. This is due to their slow growth and reproduction, and people collecting them for their shells and as food.
 
-In Singapore, the Fluted Giant Clam species now occurs in very low numbers and could soon be locally <span class="tooltip-word" data-tip="extinct">extinct</span>.
+In Singapore, the Fluted Giant Clam species are very few and could soon be locally <span class="tooltip-word" data-tip="extinct">extinct</span>.
 
 NParks (the National Parks Board) is working to protect the Fluted Giant Clam through conservation programmes at Sisters' Islands Marine Park. Researchers have been breeding clams in captivity and releasing them back onto our reefs to boost wild populations.`,
       actions: [
@@ -838,10 +930,32 @@ function renderAllPanels() {
 function renderMeet(data) {
   const el = document.getElementById('panel-meet');
 
+  // Helper function to render card content (handles both 'text' and 'content' array formats)
+  function renderCardContent(c) {
+    // New format: content array
+    if (c.content && Array.isArray(c.content)) {
+      return c.content.map(item => {
+        if (item.type === 'text') {
+          return `<p>${item.text}</p>`;
+        } else if (item.type === 'image') {
+          return `
+            <div class="inline-img-wrap">
+              <img src="${item.url}" alt="${item.cap || ''}" onerror="this.parentElement.style.display='none'">
+              ${item.cap ? `<div class="inline-img-cap">${item.cap}</div>` : ''}
+            </div>
+          `;
+        }
+        return '';
+      }).join('');
+    }
+    // Old format: single text string
+    return `<p>${c.text}</p>`;
+  }
+
   const cards = data.cards.map(c => `
     <div class="info-card">
       <h3>${c.icon} ${c.title}</h3>
-      <p>${c.text}</p>
+      ${renderCardContent(c)}
     </div>
   `).join('');
 
@@ -880,12 +994,37 @@ function renderMeet(data) {
 
 function renderDidYouKnow(data) {
   const el = document.getElementById('panel-didyouknow');
-  const facts = data.facts.map((f, i) => `
-    <div class="fact-card">
-      <div class="fact-num">${String(i+1).padStart(2,'0')}</div>
-      <div class="fact-text">${f}</div>
-    </div>
-  `).join('');
+  
+  const facts = data.facts.map((f, i) => {
+    let content = '';
+    
+    // Handle new mixed format (object with type: 'mixed')
+    if (typeof f === 'object' && f.type === 'mixed' && Array.isArray(f.content)) {
+      content = f.content.map(item => {
+        if (item.type === 'text') {
+          return item.text;
+        } else if (item.type === 'image') {
+          return `
+            <div class="inline-img-wrap" style="margin-top:12px;">
+              <img src="${item.url}" alt="${item.caption || ''}" onerror="this.parentElement.style.display='none'">
+              ${item.caption ? `<div class="inline-img-cap">${item.caption}</div>` : ''}
+            </div>
+          `;
+        }
+        return '';
+      }).join('');
+    } else {
+      // Handle old string format
+      content = f;
+    }
+    
+    return `
+      <div class="fact-card">
+        <div class="fact-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="fact-text">${content}</div>
+      </div>
+    `;
+  }).join('');
 
   el.innerHTML = `
     <h2 class="section-title">💡 Did You Know?</h2>
@@ -952,7 +1091,34 @@ function renderConservation(data) {
 
   const s = statusMap[data.status] || statusMap['not_assessed'];
 
-  const paragraphs = data.text.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('');
+  // Handle new content array format
+  let paragraphs = '';
+  if (data.content && Array.isArray(data.content)) {
+    paragraphs = data.content.map(item => {
+      if (item.type === 'text') {
+        return `<p>${item.text}</p>`;
+      } else if (item.type === 'mixed' && Array.isArray(item.items)) {
+        const mixedContent = item.items.map(subItem => {
+          if (subItem.type === 'text') {
+            return subItem.text;
+          } else if (subItem.type === 'image') {
+            return `
+              <div class="inline-img-wrap" style="margin:16px 0;">
+                <img src="${subItem.url}" alt="${subItem.caption || ''}" onerror="this.parentElement.style.display='none'">
+                ${subItem.caption ? `<div class="inline-img-cap">${subItem.caption}</div>` : ''}
+              </div>
+            `;
+          }
+          return '';
+        }).join('');
+        return `<p>${mixedContent}</p>`;
+      }
+      return '';
+    }).join('');
+  } else if (data.text) {
+    // Handle old string format
+    paragraphs = data.text.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('');
+  }
 
   const actions = data.actions.map(a => `<li>${a}</li>`).join('');
 
